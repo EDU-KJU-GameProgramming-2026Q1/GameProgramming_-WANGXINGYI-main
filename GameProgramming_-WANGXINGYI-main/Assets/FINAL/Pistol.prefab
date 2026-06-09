@@ -43,7 +43,6 @@ GameObject:
   - component: {fileID: 6905202467469574443}
   - component: {fileID: 3709260495670858991}
   - component: {fileID: 5898572392218220255}
-  - component: {fileID: 4905808441790641160}
   - component: {fileID: 3124418142575239973}
   - component: {fileID: 5654941089521312838}
   - component: {fileID: 8680251215287948509}
@@ -229,31 +228,6 @@ MonoBehaviour:
   OnClickEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4905808441790641160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1920188573291941785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b643b00d88954476962e6415425e692, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Actor_Pistol
-  releaseDrag: 2
-  releaseAngularDrag: 2
-  snapToHand: 1
-  pullSpeed: 10
-  GrabOffset: {x: 0, y: 0, z: 0.5}
-  PokeForce: {x: 0, y: 0, z: 10}
-  ReleaseForce: {x: 0, y: 1, z: 1}
-  itemData: {fileID: 11400000, guid: 208395863c9ed4c31b334284c3f5cc3e, type: 2}
-  ItemOffset: {x: 0.2, y: -0.2, z: 0.4}
-  FirePoint: {fileID: 1815838099432040386}
-  Bullet: {fileID: 1140185514427117624, guid: a35733c83237445caa0cc27adabc6be9, type: 3}
-  BulletSpeed: 100
-  BulletDamage: 1
 --- !u!114 &3124418142575239973
 MonoBehaviour:
   m_ObjectHideFlags: 0
