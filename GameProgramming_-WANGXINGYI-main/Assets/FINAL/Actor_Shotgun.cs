@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 
 public class Actor_Shotgun : InterfaceBase_IItem
 {
@@ -20,12 +21,24 @@ public class Actor_Shotgun : InterfaceBase_IItem
 
     [Header("UI")]
     public GameObject reloadUI;
+    public TextMeshProUGUI ammoCountText;
 
     void Start()
     {
         currentAmmo = maxAmmo;
         if (reloadUI != null)
             reloadUI.SetActive(false);
+
+        RefreshAmmoText();
+    }
+
+    // 刷新弹药UI，前缀Shotgun
+    void RefreshAmmoText()
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text = $"Shotgun {currentAmmo}/{maxAmmo}";
+        }
     }
 
     public override void OnUse()
@@ -46,6 +59,7 @@ public class Actor_Shotgun : InterfaceBase_IItem
     {
         Debug.Log("펑! (샷건 발사)");
         currentAmmo--;
+        RefreshAmmoText();
 
         Vector3 pos = FirePoint.position;
 
@@ -94,6 +108,8 @@ public class Actor_Shotgun : InterfaceBase_IItem
 
         if (reloadUI != null)
             reloadUI.SetActive(false);
+
+        RefreshAmmoText();
     }
 
     void Update()

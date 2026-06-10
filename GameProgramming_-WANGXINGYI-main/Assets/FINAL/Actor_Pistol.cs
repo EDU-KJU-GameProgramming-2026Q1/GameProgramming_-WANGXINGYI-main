@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class Actor_Pistol : InterfaceBase_IItem
 {
@@ -15,7 +16,8 @@ public class Actor_Pistol : InterfaceBase_IItem
     private bool isReloading = false; // 是否正在换弹
 
     [Header("UI")]
-    public GameObject reloadUI; // 拖入“换弹提示UI”
+    public GameObject reloadUI;        // 换弹提示Pistol Reloading...
+    public TextMeshProUGUI ammoCountText;         // 弹药数量显示文本
 
 
     void Start()
@@ -26,6 +28,18 @@ public class Actor_Pistol : InterfaceBase_IItem
         // 确保一开始UI是关闭的
         if (reloadUI != null)
             reloadUI.SetActive(false);
+
+        // 初始化弹药显示
+        RefreshAmmoText();
+    }
+
+    // 刷新子弹数字UI，文字格式：Pistol 12/12
+    void RefreshAmmoText()
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text = $"Pistol {currentAmmo}/{maxAmmo}";
+        }
     }
 
 
@@ -53,6 +67,8 @@ public class Actor_Pistol : InterfaceBase_IItem
 
         // 子弹减少
         currentAmmo--;
+        // 开枪后更新数字
+        RefreshAmmoText();
 
         Vector3 pos = FirePoint.position;
         Quaternion dir = FirePoint.rotation;
@@ -95,9 +111,12 @@ public class Actor_Pistol : InterfaceBase_IItem
 
         Debug.Log("피스톨 재장전 완료");
 
-        // 关闭UI
+        // 关闭换弹提示UI
         if (reloadUI != null)
             reloadUI.SetActive(false);
+
+        // 换弹完毕刷新子弹数字
+        RefreshAmmoText();
     }
 
 

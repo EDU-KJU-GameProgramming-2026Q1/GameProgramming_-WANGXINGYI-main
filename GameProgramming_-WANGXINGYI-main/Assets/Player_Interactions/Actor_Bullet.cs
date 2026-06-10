@@ -2,10 +2,15 @@
 
 public class Actor_Bullet : MonoBehaviour
 {
-    public GameObject MissEffect, HitEffect;
-    public GameObject ShootSound, HitSound;
-    private float bulletDamage = 5f;    
-    private bool isHit = false;  
+    public GameObject MissEffect, HitEffect, ShootEffect;
+
+    public AudioClip ShootSound, HitSound;
+    public AudioSource audioSource;
+    public float BulletDestroyDelay = 0.2f;
+
+
+    private float bulletDamage = 5f;
+    private bool isHit = false;
 
     private Rigidbody rb;
     private Vector3 lastVelocity; // [추가] 물리 엔진이 속도를 0으로 만들기 전의 속도를 기억할 변수
@@ -13,6 +18,8 @@ public class Actor_Bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioSource.clip = ShootSound;
+        audioSource.PlayOneShot(ShootSound);
     }
 
     void FixedUpdate()
@@ -38,21 +45,24 @@ public class Actor_Bullet : MonoBehaviour
         {
             Debug.Log($"[OnTriggerEnter] Hit {collision.gameObject.name}! Damage: " + bulletDamage);
             isHit = true;
-            ShowEffect(HitEffect, contactPoint); 
+            ShowEffect(HitEffect, contactPoint);
             //ScoreManager.Instance.AddScore(-10);    
-            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(bulletDamage);   
+            collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(bulletDamage);
+            AudioSource.PlayClipAtPoint(HitSound, transform.position);
+
             Destroy(gameObject);
-        } 
-        else if(collision.gameObject.CompareTag("Enemy"))
+        }
+        else if (collision.gameObject.CompareTag("Enemy"))
         {
             Debug.Log($"[OnTriggerEnter] Hit {collision.gameObject.name}! Damage: " + bulletDamage);
             isHit = true;
             ShowEffect(HitEffect, contactPoint);
             //ScoreManager.Instance.AddScore(10);          
             collision.gameObject.GetComponent<EnemyHealth>().TakeDamage(bulletDamage);
+            AudioSource.PlayClipAtPoint(HitSound, transform.position);
             Destroy(gameObject);
-        }        
-        else if(collision.gameObject.CompareTag("Shootable"))
+        }
+        else if (collision.gameObject.CompareTag("Shootable"))
         {
             // Debug.Log("[OnCollisionEnter] Miss Target! No Damage");
             ShowEffect(MissEffect, contactPoint);
@@ -60,10 +70,10 @@ public class Actor_Bullet : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject, 2f);    
+            Destroy(gameObject, 2f);
         }
-        
-        
+
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -71,7 +81,8 @@ public class Actor_Bullet : MonoBehaviour
         if (isHit) return;
 
         Vector3 contactPoint = other.ClosestPoint(transform.position);
-        if (other.CompareTag("Player")){
+        if (other.CompareTag("Player"))
+        {
             isHit = true;
             Debug.Log($"[OnTriggerEnter] Hit {other.name}! Damage: " + bulletDamage);
             ShowEffect(HitEffect, contactPoint);
@@ -79,8 +90,8 @@ public class Actor_Bullet : MonoBehaviour
             //ScoreManager.Instance.AddScore(-10);
             other.GetComponent<PlayerHealth>().TakeDamage(bulletDamage);
             Destroy(gameObject);
-        } 
-        else if(other.CompareTag("Enemy"))
+        }
+        else if (other.CompareTag("Enemy"))
         {
             isHit = true;
             Debug.Log($"[OnTriggerEnter] Hit {other.name}! Damage: " + bulletDamage);
@@ -88,19 +99,21 @@ public class Actor_Bullet : MonoBehaviour
 
             //ScoreManager.Instance.AddScore(10);
             other.GetComponent<EnemyHealth>().TakeDamage(bulletDamage);
+            AudioSource.PlayClipAtPoint(HitSound, transform.position);
             Destroy(gameObject);
         }
-        else if(other.CompareTag("Shootable"))
+        else if (other.CompareTag("Shootable"))
         {
             Debug.Log($"[OnTriggerEnter] Miss {other.name} ");
             ShowEffect(MissEffect, contactPoint);
+            AudioSource.PlayClipAtPoint(HitSound, transform.position);
             Destroy(gameObject);
         }
         else
         {
-            Destroy(gameObject, 2f);    
+            Destroy(gameObject, 2f);
         }
-        
+
         // Destroy(gameObject);
     }
 
@@ -116,7 +129,7 @@ public class Actor_Bullet : MonoBehaviour
     void ShowEffect(GameObject Effect, Vector3 contactPoint)
     {
         Vector3 surfaceNormal = (transform.position - contactPoint).normalized;
-        Vector3 pos = contactPoint + (surfaceNormal * 0.05f);        
+        Vector3 pos = contactPoint + (surfaceNormal * 0.05f);
         Quaternion dir = Quaternion.LookRotation(surfaceNormal);
         GameObject hitEffectClone = Instantiate(Effect, pos, dir);
         Destroy(hitEffectClone, 2f);
@@ -125,7 +138,7 @@ public class Actor_Bullet : MonoBehaviour
     void ShowEffect(GameObject Effect, float calibTime)
     {
         // [수정] 현재 충돌해서 0이 되었을지도 모르는 rb.velocity 대신, 우리가 기록한 lastVelocity를 사용합니다.
-        Vector3 bulletSpeed = lastVelocity; 
+        Vector3 bulletSpeed = lastVelocity;
 
         // 예외 처리: 만약 기록된 속도마저 없다면 현재 Rigidbody 속도나마 대안으로 사용
         if (bulletSpeed.sqrMagnitude < 0.001f && rb != null)
@@ -148,7 +161,7 @@ public class Actor_Bullet : MonoBehaviour
         GameObject hitEffectClone = Instantiate(Effect, pos, dir);
         Destroy(hitEffectClone, 2f);
     }
-    
+
 
     void ShowEffect(GameObject Effect)
     {

@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class Actor_Rifle : InterfaceBase_IItem
 {
@@ -18,6 +18,8 @@ public class Actor_Rifle : InterfaceBase_IItem
     [Header("UI 引用")]
     [Tooltip("换弹提示文本/物体")]
     public GameObject ReloadTipUI;
+    [Tooltip("弹药数量TMP文本")]
+    public TextMeshProUGUI ammoCountText;
 
     private bool isFiring = false;
     private bool isReloading = false;
@@ -30,6 +32,17 @@ public class Actor_Rifle : InterfaceBase_IItem
         // 初始隐藏换弹提示
         if (ReloadTipUI != null)
             ReloadTipUI.SetActive(false);
+        // 初始化弹药UI
+        RefreshAmmoText();
+    }
+
+    // 刷新弹药显示：Rifle 当前/最大
+    void RefreshAmmoText()
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text = $"Rifle {currentAmmo}/{MaxMagazineAmmo}";
+        }
     }
 
     public override void OnUse()
@@ -82,11 +95,15 @@ public class Actor_Rifle : InterfaceBase_IItem
         // 隐藏换弹UI
         if (ReloadTipUI != null)
             ReloadTipUI.SetActive(false);
+        // 换弹结束刷新数字
+        RefreshAmmoText();
     }
 
     void Fire()
     {
         currentAmmo--;
+        // 开枪后刷新弹药UI
+        RefreshAmmoText();
 
         Vector3 pos = FirePoint.position;
         Quaternion dir = FirePoint.rotation;
